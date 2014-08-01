@@ -1,3 +1,9 @@
+
+<h2>Marking Assistant</h2>
+<input class="input-block-level" id="marking_assistant" type="text" placeholder="Enter in your keywords here!">
+
+<div id="marking_keywords"></div>
+
 <% if @assessment.specific.respond_to? :single_question? and @assessment.specific.single_question? %>
     <%= render :partial => 'single_question_form', locals: {mode: "edit"} %>
 <% else %>
@@ -33,5 +39,52 @@
     $(document).ready(function() {
         if ($("#exp-sum").val() == "")
             suggestEXP( <%= @assessment.max_grade %>, <%= @assessment.exp %> );
+        var markingKeywords = []
+        //load cache for marking assistant
     });
+
+    $("#marking_assistant").keypress(function (e) {
+        if (e.keyCode == 13) {
+            addTag(document.getElementById("marking_assistant").value);
+            document.getElementById("marking_assistant").value = "";
+        };  
+    });
+
+    //Add in click function to remove tag
+    $(".assist_tags").onclick(function () {
+        $
+    });
+
+    function getTag(keyWord) {
+        return  "<tag class=\"assist_tags\" id=\"" + keyWord + "\" onClick=\"removeTag(this.id)\">" 
+                + keyWord + " </tag>"
+    };
+
+    function getHighlightTag(keyWord) {
+        return "<strong id=\"" + keyWord + "\">" + keyWord + "</strong>"
+    };
+
+    function addTag(keyWord) {
+        $("#marking_keywords").append(getTag(keyWord));
+        changeHighlights(keyWord, "update");
+        // Update the cache
+    };
+
+    function removeTag(keyWord) {
+        $("#" + keyWord).remove();
+        changeHighlights(keyWord, "remove");
+    };
+
+    function changeHighlights(keyWord, mode) {
+        var answer = document.getElementsByClassName("submission-question-block")[0].innerHTML;
+        answer = answer.replace("<br>", "<>")
+        if (mode == "update") {
+            answer = answer.split(keyWord).join(getHighlightTag(keyWord));
+        } else {
+            answer = answer.split(getHighlightTag(keyWord)).join(keyWord);
+        };        
+        answer = answer.replace("<>", "<br>")
+        document.getElementsByClassName("submission-question-block")[0].innerHTML = answer;
+    };
+
 </script>
