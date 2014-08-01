@@ -1,15 +1,7 @@
+<h2>Marking Assistant</h2>
+<input class="input-block-level" id="marking_assistant" type="text" placeholder="Enter in your keywords here!">
 
-<span class="assist-title">Marking Assistant</span>
-<span class="assist-hint" onclick="toggleMarkingAssistant()">
-    Highlight keywords
-</span>
-<span class="assist-hide-option" onclick="toggleMarkingAssistant()" hidden>
-    Hide Marking Assistant
-</span>
-<div class="assist-field" hidden>
-    <input class="input-block-level" id="marking_assistant" type="text" placeholder="Type each word, followed by the enter key.">
-    <div id="marking-keywords"></div>
-</div>
+<div id="marking_keywords"></div>
 
 <% if @assessment.specific.respond_to? :single_question? and @assessment.specific.single_question? %>
     <%= render :partial => 'single_question_form', locals: {mode: "edit"} %>
