@@ -1,6 +1,8 @@
 
-<h2>Marking Assistant</h2>
-<input class="input-block-level" id="marking_assistant" type="text" placeholder="Enter in your keywords here!">
+<h2>Marking Assistant</h2> 
+<h6 class="assist-hint" onclick="toggleMarkingAssistant()">Click to Highlight Keywords</h6> 
+<h6 class="assist-instructions" onclick="toggleMarkingAssistant()" hidden>Show once expanded</h6>
+<input class="input-block-level" id="marking_assistant" type="text" placeholder="Enter in your keywords here!" hidden>
 
 <div id="marking_keywords"></div>
 
@@ -43,48 +45,38 @@
         //load cache for marking assistant
     });
 
-    $("#marking_assistant").keypress(function (e) {
-        if (e.keyCode == 13) {
-            addTag(document.getElementById("marking_assistant").value);
-            document.getElementById("marking_assistant").value = "";
+    $( "#marking_assistant" ).keypress( function ( e ) {
+        if ( e.keyCode == 13 ) {
+            addTag( document.getElementById( "marking_assistant" ).value );
+            document.getElementById( "marking_assistant" ).value = "";
         };  
     });
 
-    //Add in click function to remove tag
-    $(".assist_tags").onclick(function () {
-        $
-    });
-
-    function getTag(keyWord) {
-        return  "<tag class=\"assist_tags\" id=\"" + keyWord + "\" onClick=\"removeTag(this.id)\">" 
-                + keyWord + " </tag>"
+    function toggleMarkingAssistant() {
+        $( ".assist-hint" ).toggle();
+        $( ".assist-instructions" ).toggle();
+        $( "#marking_assistant").toggle();
     };
 
-    function getHighlightTag(keyWord) {
-        return "<strong id=\"" + keyWord + "\">" + keyWord + "</strong>"
+    function setTag( keyWord ) {
+        return  "<span class='assist_tags' id='" + keyWord + "'>" 
+                + "<span class='selected_word'>" + keyWord 
+                + "</span>" + "<i class='icon-remove-sign icon-white' " 
+                + "onClick='removeTag(this.id)' id='" + keyWord 
+                + "'></i></span>"
     };
 
-    function addTag(keyWord) {
-        $("#marking_keywords").append(getTag(keyWord));
-        changeHighlights(keyWord, "update");
+    function addTag( keyWord ) {
+        $( "#marking_keywords" ).append( setTag( keyWord ) );
+        $( ".submission-question-block" ).highlight( " " + keyWord, { className: keyWord, element: "strong" } );
+        // TODO - make the functionality of highlighting whole words more robust
         // Update the cache
     };
 
-    function removeTag(keyWord) {
-        $("#" + keyWord).remove();
-        changeHighlights(keyWord, "remove");
-    };
-
-    function changeHighlights(keyWord, mode) {
-        var answer = document.getElementsByClassName("submission-question-block")[0].innerHTML;
-        answer = answer.replace("<br>", "<>")
-        if (mode == "update") {
-            answer = answer.split(keyWord).join(getHighlightTag(keyWord));
-        } else {
-            answer = answer.split(getHighlightTag(keyWord)).join(keyWord);
-        };        
-        answer = answer.replace("<>", "<br>")
-        document.getElementsByClassName("submission-question-block")[0].innerHTML = answer;
+    function removeTag( keyWord ) {
+        $( "#" + keyWord ).remove();
+        $( ".submission-question-block" ).unhighlight( { className: keyWord, element: "strong" } );
+        // Update the cache
     };
 
 </script>
