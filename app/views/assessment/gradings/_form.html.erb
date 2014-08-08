@@ -1,9 +1,15 @@
-<h2>Marking Assistant</h2> 
-<h6 class="assist-hint" onclick="toggleMarkingAssistant()">Click to Highlight Keywords</h6> 
-<h6 class="assist-instructions" onclick="toggleMarkingAssistant()" hidden>Show once expanded</h6>
-<input class="input-block-level" id="marking_assistant" type="text" placeholder="Enter in your keywords here!" hidden>
-
-<div id="marking_keywords"></div>
+<span class="assist-title">Marking Assistant</span>
+<span class="assist-hint" onclick="toggleMarkingAssistant()">
+    Highlight keywords in your student's submission
+</span>
+<span class="assist-hide-option" onclick="toggleMarkingAssistant()" hidden>
+    Hide Marking Assistant
+</span>
+<div class="assist-field" hidden>
+    <h6 class="assist-instructions" onclick="toggleMarkingAssistant()">Show once expanded</h6>
+    <input class="input-block-level" id="marking_assistant" type="text" placeholder="Type in your keywords, enter to confirm."  >
+    <div id="marking-keywords"></div>
+</div>
 
 <% if @assessment.specific.respond_to? :single_question? and @assessment.specific.single_question? %>
     <%= render :partial => 'single_question_form', locals: {mode: "edit"} %>
