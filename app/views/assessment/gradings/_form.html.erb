@@ -7,7 +7,8 @@
     Hide Marking Assistant
 </span>
 <div class="assist-field" hidden>
-    <input class="input-block-level" id="marking_assistant" type="text" placeholder="To highlight keywords, enter each word followed by the enter key."  >
+    <input class="input-block-level" id="marking_assistant" type="text" placeholder="To highlight keywords, 
+        enter each word followed by the enter key. Only the first word will be taken and special charcters will be ignored.">
     <div id="marking-keywords"></div>
 </div>
 
@@ -77,8 +78,18 @@
                 + "'></i></span>"
     };
 
+    function cleanWord( keyWord ) {
+        keyWord = keyWord.match( /[a-z,A-Z]+/i );
+        if ( keyWord.length == 0 ) {
+            return "";
+        } else {
+            return escape( keyWord );    
+        };
+    };
+
     function addTag( keyWord ) {
-        // must sanitize keyword and only take first word!!
+
+        keyWord = cleanWord(keyWord);
 
         if ( 'markAssist' in $.cache ) {
             if ( !( $.inArray( keyWord, $.cache[ 'markAssist' ] ) ) ) {
@@ -89,9 +100,11 @@
         } else {
             $.cache[ 'markAssist' ] = [ keyWord ];
         };
+
+        // Change to adding a node using DOM
         $( "#marking-keywords" ).append( setTag( keyWord ) );
-        $( ".submission-question-block" ).highlight( " " + keyWord, { className: keyWord, element: "strong" } );
-        // TODO - make the functionality of highlighting whole words more robust
+
+        $( ".submission-question-block" ).highlight( keyWord, { className: keyWord, element: "strong", wordsOnly: true } );
         // Implement colors
     };
 
