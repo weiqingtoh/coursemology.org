@@ -7,8 +7,7 @@
     Hide Marking Assistant
 </span>
 <div class="assist-field" hidden>
-    <h6 class="assist-instructions" onclick="toggleMarkingAssistant()">Show once expanded</h6>
-    <input class="input-block-level" id="marking_assistant" type="text" placeholder="Type in your keywords, enter to confirm."  >
+    <input class="input-block-level" id="marking_assistant" type="text" placeholder="To highlight keywords, enter each word followed by the enter key."  >
     <div id="marking-keywords"></div>
 </div>
 
@@ -48,6 +47,12 @@
         if ($("#exp-sum").val() == "")
             suggestEXP( <%= @assessment.max_grade %>, <%= @assessment.exp %> );
         var markingKeywords = []
+        if ( 'markAssist' in $.cache ) {
+            for ( var i = 0; i < $.cache[ 'markAssist' ].length; i++ ) {
+                addTag( $.cache[ 'markAssist'][i] );
+            };
+            toggleMarkingAssistant();
+        }
         //load cache for marking assistant
     });
 
@@ -73,16 +78,27 @@
     };
 
     function addTag( keyWord ) {
-        $( "#marking_keywords" ).append( setTag( keyWord ) );
+        // must sanitize keyword and only take first word!!
+
+        if ( 'markAssist' in $.cache ) {
+            if ( !( $.inArray( keyWord, $.cache[ 'markAssist' ] ) ) ) {
+                return
+            } else {
+                $.cache[ 'markAssist' ].push( keyWord );
+            };
+        } else {
+            $.cache[ 'markAssist' ] = [ keyWord ];
+        };
+        $( "#marking-keywords" ).append( setTag( keyWord ) );
         $( ".submission-question-block" ).highlight( " " + keyWord, { className: keyWord, element: "strong" } );
         // TODO - make the functionality of highlighting whole words more robust
-        // Update the cache
+        // Implement colors
     };
 
     function removeTag( keyWord ) {
         $( "#" + keyWord ).remove();
         $( ".submission-question-block" ).unhighlight( { className: keyWord, element: "strong" } );
-        // Update the cache
+        $.cache[ 'markAssist' ].splice( $.cache[ 'markAssist' ].indexOf( keyWord ), 1 )
     };
 
 </script>
