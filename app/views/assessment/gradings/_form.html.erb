@@ -6,7 +6,8 @@
     Hide Marking Assistant
 </span>
 <div class="assist-field" hidden>
-    <input class="input-block-level" id="marking_assistant" type="text" placeholder="To highlight keywords, enter each word followed by the enter key."  >
+    <input class="input-block-level" id="marking_assistant" type="text" placeholder="To highlight keywords, 
+        enter each word followed by the enter key. Only the first word will be taken and special charcters will be ignored.">
     <div id="marking-keywords"></div>
 </div>
 
@@ -97,6 +98,15 @@
         };
     };
 
+    function cleanWord( keyWord ) {
+        keyWord = keyWord.match( /[a-z,A-Z]+/i );
+        if ( keyWord.length == 0 ) {
+            return "";
+        } else {
+            return escape( keyWord );    
+        };
+    };
+
     function addTag( keyWord ) {
 
         keyWord = cleanWord(keyWord);
@@ -112,7 +122,7 @@
         } else {
             $.cache[ 'markAssist' ] = [ keyWord ];
         };
-
+        
         $( "#marking-keywords" ).append( setTag( keyWord ) );
         $( ".submission-question-block" ).highlight( keyWord, { className: keyWord, element: "strong", wordsOnly: true } );
         // Implement colors
