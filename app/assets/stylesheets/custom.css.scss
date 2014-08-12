@@ -954,13 +954,14 @@ $grayMediumLight: #eaeaea;
   font-size: 18px;
   line-height: 24px;
   padding-right: 5px;
+  padding-bottom: 5px;
   display: inline-block;
 }
 
 .assist-hint {
   //text-transform: uppercase;
   font-size: 12px;
-  text-color: #919191;
+  color: #919191;
   &:hover {
     font-weight: bold;
     text-color: #141414;
