@@ -1,13 +1,13 @@
 
 <span class="assist-title">Marking Assistant</span>
 <span class="assist-hint" onclick="toggleMarkingAssistant()">
-    Highlight keywords in your student's submission
+    Highlight keywords
 </span>
 <span class="assist-hide-option" onclick="toggleMarkingAssistant()" hidden>
     Hide Marking Assistant
 </span>
 <div class="assist-field" hidden>
-    <input class="input-block-level" id="marking_assistant" type="text" placeholder="To highlight keywords, enter each word followed by the enter key. Only the first word will be taken and special charcters will be ignored.">
+    <input class="input-block-level" id="marking_assistant" type="text" placeholder="Type each word, followed by the enter key.">
     <div id="marking-keywords"></div>
 </div>
 
@@ -52,8 +52,7 @@
                 addTag( $.cache[ 'markAssist'][i] );
             };
             toggleMarkingAssistant();
-        }
-        //load cache for marking assistant
+        };
     });
 
     $( "#marking_assistant" ).keypress( function ( e ) {
@@ -70,19 +69,32 @@
     };
 
     function setTag( keyWord ) {
-        return  "<span class='assist-tags' id='" + keyWord + "'>" 
-                + "<span class='selected-word'>" + keyWord 
-                + "</span>" + "<i class='icon-remove-sign icon-white' " 
-                + "onClick='removeTag(this.id)' id='" + keyWord 
-                + "'></i></span>"
+
+        var keyWordTag = document.createElement('span');
+        keyWordTag.className = 'assist-tags';
+        keyWordTag.id = keyWord;
+
+        var keyWordCancel = document.createElement('i');
+        keyWordCancel.className = 'icon-remove-sign icon-white';
+        keyWordCancel.id = keyWord;
+        keyWordCancel.setAttribute( "onClick", "removeTag(this.id)" );
+
+        var selectedWord = document.createElement('span');
+        selectedWord.className = 'selected-word';
+        selectedWord.textContent = keyWord;
+
+        keyWordTag.appendChild(selectedWord);
+        keyWordTag.appendChild(keyWordCancel);
+
+        return keyWordTag;
     };
 
     function cleanWord( keyWord ) {
-        keyWord = keyWord.match( /[a-z,A-Z]+/i );
-        if ( keyWord.length == 0 ) {
+        keyWord = keyWord.match( /[-a-zA-Z']+/i );
+        if ( keyWord == null || keyWord.length == 0 ) {
             return "";
         } else {
-            return escape( keyWord );    
+            return keyWord[0];
         };
     };
 
@@ -90,9 +102,11 @@
 
         keyWord = cleanWord(keyWord);
 
+        if ( keyWord == "" ) { return; }
+
         if ( 'markAssist' in $.cache ) {
-            if ( !( $.inArray( keyWord, $.cache[ 'markAssist' ] ) ) ) {
-                return
+            if ( $.inArray( keyWord, $.cache[ 'markAssist' ]) != -1 ) {
+                return;
             } else {
                 $.cache[ 'markAssist' ].push( keyWord );
             };
@@ -100,9 +114,7 @@
             $.cache[ 'markAssist' ] = [ keyWord ];
         };
 
-        // Change to adding a node using DOM
         $( "#marking-keywords" ).append( setTag( keyWord ) );
-
         $( ".submission-question-block" ).highlight( keyWord, { className: keyWord, element: "strong", wordsOnly: true } );
         // Implement colors
     };
@@ -110,7 +122,7 @@
     function removeTag( keyWord ) {
         $( "#" + keyWord ).remove();
         $( ".submission-question-block" ).unhighlight( { className: keyWord, element: "strong" } );
-        $.cache[ 'markAssist' ].splice( $.cache[ 'markAssist' ].indexOf( keyWord ), 1 )
+        $.cache[ 'markAssist' ].splice( $.cache[ 'markAssist' ].indexOf( keyWord ), 1 );
     };
 
 </script>
