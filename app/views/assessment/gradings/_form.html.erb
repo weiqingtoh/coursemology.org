@@ -1,12 +1,12 @@
 <span class="assist-title">Marking Assistant</span>
 <span class="assist-hint" onclick="toggleMarkingAssistant()">
-    Highlight keywords in your student's submission
+    Highlight keywords
 </span>
 <span class="assist-hide-option" onclick="toggleMarkingAssistant()" hidden>
     Hide Marking Assistant
 </span>
 <div class="assist-field" hidden>
-    <input class="input-block-level" id="marking_assistant" type="text" placeholder="To highlight keywords, enter each word followed by the enter key. Only the first word will be taken and special charcters will be ignored.">
+    <input class="input-block-level" id="marking_assistant" type="text" placeholder="Type each word, followed by the enter key.">
     <div id="marking-keywords"></div>
 </div>
 
@@ -98,11 +98,11 @@
     };
 
     function cleanWord( keyWord ) {
-        keyWord = keyWord.match( /[a-z,A-Z]+/i );
-        if ( keyWord.length == 0 ) {
+        keyWord = keyWord.match( /[-a-zA-Z']+/i );
+        if ( keyWord == null || keyWord.length == 0 ) {
             return "";
         } else {
-            return escape( keyWord );    
+            return keyWord[0];
         };
     };
 
