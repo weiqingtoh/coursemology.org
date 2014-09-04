@@ -934,7 +934,9 @@ $grayMediumLight: #eaeaea;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
+}
 
+#submission-answer{
   strong {
     color: #ffffff;
     text-decoration: underline;
@@ -946,7 +948,17 @@ $grayMediumLight: #eaeaea;
 }
 
 #marking-keywords {
-  margin-bottom:5px;
+  margin-top: 10px;
+  margin-bottom: 5px;
+}
+
+#marking-helpers {
+  margin-top: 10px;
+}
+
+#marking-assistant {
+  margin-top: 10px;
+  margin-bottom: 5px;
 }
 
 .assist-title {
@@ -960,32 +972,26 @@ $grayMediumLight: #eaeaea;
 
 .assist-hint {
   //text-transform: uppercase;
+  display: inline-block;
   font-size: 12px;
   color: #919191;
   &:hover {
     font-weight: bold;
     text-color: #141414;
+    cursor: pointer;  
   }
   .hidden {
     display: none;
   }
 }
 
-.assist-hide-option {
-  //text-transform: uppercase;
+.btn-clear {
   font-size: 12px;
-  text-color: #919191;
-  &:hover {
-    font-weight: bold;
-    text-color: #141414;
-  }
-  .hidden {
-    display: none;
-  }
 }
 
 .assist-tags {
-  padding: 3px 10px 3px 5px;
+  margin-top: 5px;
+  padding: 3px 5px 3px 5px;
   background-color: #4055C9;
   font-size: 15px;
   color: #ffffff;
@@ -1000,6 +1006,7 @@ $grayMediumLight: #eaeaea;
 
 .selected-word {
   padding-right: 5px;
+  font-size: 12px;
 }
 
 .modal-body {
