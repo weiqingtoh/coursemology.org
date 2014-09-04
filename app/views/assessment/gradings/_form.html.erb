@@ -1,12 +1,16 @@
+<hr>
 <span class="assist-title">Marking Assistant</span>
-<span class="assist-hint" onclick="toggleMarkingAssistant()">
-    Highlight keywords
-</span>
-<span class="assist-hide-option" onclick="toggleMarkingAssistant()" hidden>
-    Hide Marking Assistant
-</span>
-<div class="assist-field" hidden>
-    <input class="input-block-level" id="marking_assistant" type="text" placeholder="Type each word, followed by the enter key.">
+
+<a class="assist-hint" data-toggle="collapse" data-target=".assist-field">
+    Show/Hide Assistant
+</a>
+
+<div class="assist-field collapse">
+    <div id="marking-helpers">
+        <button class="btn btn-info btn-small btn-clear" onClick="addSuggestedWords()">Suggested Keywords</button>
+        <button class="btn btn-info btn-small btn-clear" onClick="clearAll()">Clear All</button>
+    </div>
+    <input class="input-block-level" id="marking-assistant" type="text" placeholder="Type each word, followed by the enter key.">
     <div id="marking-keywords"></div>
 </div>
 
@@ -45,27 +49,22 @@
     $(document).ready(function() {
         if ($("#exp-sum").val() == "")
             suggestEXP( <%= @assessment.max_grade %>, <%= @assessment.exp %> );
-        var markingKeywords = []
         if ( 'markAssist' in $.cache ) {
             for ( var i = 0; i < $.cache[ 'markAssist' ].length; i++ ) {
                 addTag( $.cache[ 'markAssist'][i] );
             };
-            toggleMarkingAssistant();
+            $(".collapse").collapse();
+        } else {
+            $.cache['markAssist'] = [];
         };
     });
 
-    $( "#marking_assistant" ).keypress( function ( e ) {
+    $( "#marking-assistant" ).keypress( function ( e ) {
         if ( e.keyCode == 13 ) {
-            addTag( document.getElementById( "marking_assistant" ).value );
-            document.getElementById( "marking_assistant" ).value = "";
+            addTag( document.getElementById( "marking-assistant" ).value );
+            document.getElementById( "marking-assistant" ).value = "";
         };  
     });
-
-    function toggleMarkingAssistant() {
-        $( ".assist-hint" ).toggle();
-        $( ".assist-field" ).toggle();
-        $( ".assist-hide-option" ).toggle();
-    };
 
     function setTag( keyWord ) {
 
@@ -88,7 +87,7 @@
         return keyWordTag;
     };
 
-    function cleanWord( keyWord ) {
+    function cleanWord( keyWord ) { // Pick out first word using regex
         keyWord = keyWord.match( /[-a-zA-Z']+/i );
         if ( keyWord == null || keyWord.length == 0 ) {
             return "";
@@ -107,23 +106,19 @@
     };
 
     function addTag( keyWord ) {
-
         keyWord = cleanWord(keyWord);
 
+        // Empty keyword
         if ( keyWord == "" ) { return; }
-
-        if ( 'markAssist' in $.cache ) {
-            if ( $.inArray( keyWord, $.cache[ 'markAssist' ]) != -1 ) {
-                return;
-            } else {
-                $.cache[ 'markAssist' ].push( keyWord );
-            };
+        
+        if ( $.inArray( keyWord, $.cache[ 'markAssist' ]) != -1 ) {
+            return; // Repeated word
         } else {
-            $.cache[ 'markAssist' ] = [ keyWord ];
+            $.cache[ 'markAssist' ].push( keyWord );
         };
         
         $( "#marking-keywords" ).append( setTag( keyWord ) );
-        $( ".submission-question-block" ).highlight( keyWord, { className: keyWord, element: "strong", wordsOnly: true } );
+        $( "#submission-answer" ).highlight( keyWord, { className: keyWord, element: "strong", wordsOnly: true } );
         // Implement colors
     };
 
@@ -131,6 +126,22 @@
         $( "#" + keyWord ).remove();
         $( ".submission-question-block" ).unhighlight( { className: keyWord, element: "strong" } );
         $.cache[ 'markAssist' ].splice( $.cache[ 'markAssist' ].indexOf( keyWord ), 1 );
+    };
+
+    function addSuggestedWords() {
+        // Add suggested words
+        // Retrieve from db
+        // Add words
+        a = [ 'a', 'b' ,'c' ]
+        for ( var i= 0; i < a.length; i++ ) {
+            addTag( a[i] );
+        };
+    };
+
+    function clearAll() {
+        while ( $.cache[ "markAssist" ].length > 0 ) {
+            removeTag( $.cache[ "markAssist" ][0] );
+        };
     };
 
 </script>
