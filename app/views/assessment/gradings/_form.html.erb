@@ -118,13 +118,14 @@
         };
         
         $( "#marking-keywords" ).append( setTag( keyWord ) );
-        $( "#submission-answer" ).highlight( keyWord, { className: keyWord, element: "strong", wordsOnly: true } );
+        //var lst = document.getElementsByClassName('submission-answer');
+        $( ".submission-answer" ).highlight( keyWord, { className: keyWord, element: "strong", wordsOnly: true } );    
         // Implement colors
     };
 
     function removeTag( keyWord ) {
         $( "#" + keyWord ).remove();
-        $( ".submission-question-block" ).unhighlight( { className: keyWord, element: "strong" } );
+        $( ".submission-answer" ).unhighlight( { className: keyWord, element: "strong" } );
         $.cache[ 'markAssist' ].splice( $.cache[ 'markAssist' ].indexOf( keyWord ), 1 );
     };
 
