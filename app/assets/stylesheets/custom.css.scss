@@ -949,7 +949,10 @@ $grayMediumLight: #eaeaea;
 
 #marking-keywords {
   margin-top: 10px;
-  margin-bottom: 5px; 
+  margin-bottom: 5px;
+  span {
+    display: inline-block;
+  }
 } 
   
 #marking-helpers {  
