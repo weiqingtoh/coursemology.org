@@ -72,11 +72,11 @@
 
         var keyWordTag = document.createElement('span');
         keyWordTag.className = 'assist-tags';
-        keyWordTag.id = keyWord;
+        keyWordTag.id = escapeIdName( keyWord );
 
         var keyWordCancel = document.createElement('i');
         keyWordCancel.className = 'icon-remove-sign icon-white';
-        keyWordCancel.id = keyWord;
+        keyWordCancel.id = escapeIdName( keyWord );
         keyWordCancel.setAttribute( "onClick", "removeTag(this.id)" );
 
         var selectedWord = document.createElement('span');
@@ -91,7 +91,7 @@
 
     function cleanWord( keyWord ) { 
         // Pick out first word using regex
-        keyWord = keyWord.match( /[-a-zA-Z']+/i );
+        keyWord = keyWord.match( /[-a-zA-Z1-9'"]+/i );
         if ( keyWord == null || keyWord.length == 0 ) {
             return "";
         } else {
@@ -108,8 +108,16 @@
         };
     };
 
+    function escapeIdName( keyWord ) { // Add 1 in front to prevent classname clashes
+        return '1' + keyWord.replace( /'/g, "&#39" ).replace( /"/g, "&quot" );
+    };
+
+    function unEscapeIdName( keyWord ) {
+        return keyWord.slice( 1, keyWord.length ).replace( /&#39/g, "'" ).replace( /&quot/g, '"' );;
+    };
+
     function addTag( keyWord ) {
-        keyWord = cleanWord(keyWord);
+        keyWord = cleanWord( keyWord );
 
         if ( keyWord == "" ||  $.inArray( keyWord, $.cache[ 'markAssist' ]) != -1 ) { 
             return; // Empty keyword or repeate keyword
@@ -118,13 +126,14 @@
         };
         
         $( "#marking-keywords" ).append( setTag( keyWord ) );
-        $( ".submission-answer" ).highlight( keyWord, { className: '1' + keyWord, element: "strong", wordsOnly: true } );    
+        $( ".submission-answer" ).highlight( keyWord, { className: escapeIdName ( keyWord ), element: "strong", wordsOnly: true } );    
         // Implement colors
     };
 
     function removeTag( keyWord ) {
         $( "#" + keyWord ).remove();
-        $( ".submission-answer" ).unhighlight( { className: '1' + keyWord, element: "strong" } );
+        keyWord = unEscapeIdName( keyWord );
+        $( ".submission-answer" ).unhighlight( { className: escapeIdName( keyWord ), element: "strong" } );
         $.cache[ 'markAssist' ].splice( $.cache[ 'markAssist' ].indexOf( keyWord ), 1 );
     };
 
@@ -140,7 +149,7 @@
 
     function clearAll() {
         while ( $.cache[ "markAssist" ].length > 0 ) {
-            removeTag( $.cache[ "markAssist" ][0] );
+            removeTag( escapeIdName( $.cache[ "markAssist" ][0] ) );
         };
     };
 
