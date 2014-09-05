@@ -5,7 +5,7 @@
     Show/Hide Assistant
 </a>
 
-<div class="assist-field collapse">
+<div class="assist-field collapse row-fluid">
     <div id="marking-helpers">
         <button class="btn btn-info btn-small btn-clear" onClick="addSuggestedWords()">Suggested Keywords</button>
         <button class="btn btn-info btn-small btn-clear" onClick="clearAll()">Clear All</button>
@@ -49,11 +49,13 @@
     $(document).ready(function() {
         if ($("#exp-sum").val() == "")
             suggestEXP( <%= @assessment.max_grade %>, <%= @assessment.exp %> );
+
+        // Rethink caching across different assessments
         if ( 'markAssist' in $.cache ) {
             for ( var i = 0; i < $.cache[ 'markAssist' ].length; i++ ) {
                 addTag( $.cache[ 'markAssist'][i] );
             };
-            $(".collapse").collapse();
+            $(".assist-field").collapse('show');
         } else {
             $.cache['markAssist'] = [];
         };
@@ -87,7 +89,8 @@
         return keyWordTag;
     };
 
-    function cleanWord( keyWord ) { // Pick out first word using regex
+    function cleanWord( keyWord ) { 
+        // Pick out first word using regex
         keyWord = keyWord.match( /[-a-zA-Z']+/i );
         if ( keyWord == null || keyWord.length == 0 ) {
             return "";
@@ -108,24 +111,20 @@
     function addTag( keyWord ) {
         keyWord = cleanWord(keyWord);
 
-        // Empty keyword
-        if ( keyWord == "" ) { return; }
-        
-        if ( $.inArray( keyWord, $.cache[ 'markAssist' ]) != -1 ) {
-            return; // Repeated word
+        if ( keyWord == "" ||  $.inArray( keyWord, $.cache[ 'markAssist' ]) != -1 ) { 
+            return; // Empty keyword or repeate keyword
         } else {
             $.cache[ 'markAssist' ].push( keyWord );
         };
         
         $( "#marking-keywords" ).append( setTag( keyWord ) );
-        //var lst = document.getElementsByClassName('submission-answer');
-        $( ".submission-answer" ).highlight( keyWord, { className: keyWord, element: "strong", wordsOnly: true } );    
+        $( ".submission-answer" ).highlight( keyWord, { className: '1' + keyWord, element: "strong", wordsOnly: true } );    
         // Implement colors
     };
 
     function removeTag( keyWord ) {
         $( "#" + keyWord ).remove();
-        $( ".submission-answer" ).unhighlight( { className: keyWord, element: "strong" } );
+        $( ".submission-answer" ).unhighlight( { className: '1' + keyWord, element: "strong" } );
         $.cache[ 'markAssist' ].splice( $.cache[ 'markAssist' ].indexOf( keyWord ), 1 );
     };
 
