@@ -106,8 +106,8 @@
     };
 
     function getColor(){
-        //return "#4055C9"
-        var colorList = [ "#00A0B0", "#6A4A3C", "#CC333F", "#EB6841" ]
+        // Change colors here if necessary
+        var colorList = [ "#00A0B0", "#6A4A3C", "#8A9B0F", "#CC333F", "#EB6841", "#F15774"]
         var lastNode = document.getElementById( "marking-keywords" ).lastChild
         if ( lastNode == null ) { return colorList[0]; }
         var lastColor = rgb2hex( lastNode.style.backgroundColor )
