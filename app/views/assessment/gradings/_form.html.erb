@@ -68,11 +68,24 @@
         };  
     });
 
-    function setTag( keyWord ) {
+    
+    function rgb2hex(rgb) { //Function to convert hex format to a rgb color
+        rgb = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+        return "#" + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3]);
+    }
+
+    function hex(x) {
+        var hexDigits = new Array ("0","1","2","3","4","5","6","7","8","9","A","B","C","D","E","F"); 
+        return isNaN(x) ? "00" : hexDigits[(x - x % 16) / 16] + hexDigits[x % 16];
+     }
+
+    function addKeyWordHighlights( keyWord ) {
+        tagColor = getColor();
 
         var keyWordTag = document.createElement('span');
         keyWordTag.className = 'assist-tags';
         keyWordTag.id = escapeIdName( keyWord );
+        keyWordTag.style.backgroundColor = tagColor;
 
         var keyWordCancel = document.createElement('i');
         keyWordCancel.className = 'icon-remove-sign icon-white';
@@ -86,7 +99,19 @@
         keyWordTag.appendChild(selectedWord);
         keyWordTag.appendChild(keyWordCancel);
 
-        return keyWordTag;
+        $( "#marking-keywords" ).append( keyWordTag );
+        $( ".submission-answer" ).highlight( keyWord, { className: escapeIdName( keyWord ), element: "strong", wordsOnly: true } );
+        $( "." + escapeIdName( keyWord ) ).css( "backgroundColor", tagColor );
+        return;
+    };
+
+    function getColor(){
+        //return "#4055C9"
+        var colorList = [ "#00A0B0", "#6A4A3C", "#CC333F", "#EB6841" ]
+        var lastNode = document.getElementById( "marking-keywords" ).lastChild
+        if ( lastNode == null ) { return colorList[0]; }
+        var lastColor = rgb2hex( lastNode.style.backgroundColor )
+        return colorList[ ( colorList.indexOf( lastColor ) + 1 ) % colorList.length ]  
     };
 
     function cleanWord( keyWord ) { 
@@ -113,7 +138,7 @@
     };
 
     function unEscapeIdName( keyWord ) {
-        return keyWord.slice( 1, keyWord.length ).replace( /&#39/g, "'" ).replace( /&quot/g, '"' );;
+        return keyWord.slice( 1, keyWord.length ).replace( /&#39/g, "'" ).replace( /&quot/g, '"' );
     };
 
     function addTag( keyWord ) {
@@ -125,12 +150,11 @@
             $.cache[ 'markAssist' ].push( keyWord );
         };
         
-        $( "#marking-keywords" ).append( setTag( keyWord ) );
-        $( ".submission-answer" ).highlight( keyWord, { className: escapeIdName ( keyWord ), element: "strong", wordsOnly: true } );    
+        addKeyWordHighlights( keyWord );  
         // Implement colors
     };
 
-    function removeTag( keyWord ) {
+    function removeTag( keyWord ) { // keyWord parsed in is modified; must unescape
         $( "#" + keyWord ).remove();
         keyWord = unEscapeIdName( keyWord );
         $( ".submission-answer" ).unhighlight( { className: escapeIdName( keyWord ), element: "strong" } );
@@ -141,7 +165,7 @@
         // Add suggested words
         // Retrieve from db
         // Add words
-        a = [ 'a', 'b' ,'c' ]
+        var a = [ 'a', 'b' ,'c' ]
         for ( var i= 0; i < a.length; i++ ) {
             addTag( a[i] );
         };
