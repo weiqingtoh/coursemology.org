@@ -104,16 +104,16 @@
         $( "." + escapeIdName( keyWord ) ).css( "backgroundColor", tagColor );
     }
 
-    function getColor(){
+    function getColor(){ // Get next color in colorList based on last available color
         // Change colors here if necessary
-        var colorList = [ "#00A0B0", "#6A4A3C", "#8A9B0F", "#CC333F", "#EB6841", "#F15774"]
-        var lastNode = document.getElementById( "marking-keywords" ).lastChild
+        var colorList = [ "#00A0B0", "#6A4A3C", "#8A9B0F", "#CC333F", "#EB6841", "#F15774"];
+        var lastNode = document.getElementById( "marking-keywords" ).lastChild;
         if ( lastNode == null ) { return colorList[0]; }
-        var lastColor = rgb2hex( lastNode.style.backgroundColor )
+        var lastColor = rgb2hex( lastNode.style.backgroundColor );
         return colorList[ ( colorList.indexOf( lastColor ) + 1 ) % colorList.length ]  
     }
 
-    function cleanWord( keyWord ) { 
+    function cleanWord( keyWord ) {
         // Pick out first word using regex
         keyWord = keyWord.match( /[-a-zA-Z1-9'"]+/i );
         if ( keyWord == null || keyWord.length == 0 ) {
